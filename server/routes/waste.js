@@ -12,7 +12,8 @@ const TOKEN_RATES = { Wet: 2, Dry: 3, Recyclable: 5 };
 router.get('/bins', auth, async (req, res) => {
   try {
     const bins = await Bin.find().sort({ createdAt: -1 });
-    res.json(bins);
+    if (bins.length === 0) return res.status(404).json({ message: 'No bins found' });
+    res.status(200).json(bins);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
@@ -22,12 +23,16 @@ router.get('/bins', auth, async (req, res) => {
 router.post('/add', auth, async (req, res) => {
   try {
     const { binId, wasteType, weight } = req.body;
-    if (!binId || !wasteType || !weight) return res.status(400).json({ message: 'All fields required' });
+    if (!binId || !wasteType || !weight) return res.status(422).json({ message: 'All fields required' });
+    if (!TOKEN_RATES[wasteType]) return res.status(422).json({ message: 'Invalid waste type. Must be Wet, Dry, or Recyclable' });
+    if (weight <= 0) return res.status(422).json({ message: 'Weight must be greater than 0' });
 
     const tokensEarned = Math.round(TOKEN_RATES[wasteType] * weight);
 
     // Create waste log
     const bin = await Bin.findOne({ binId });
+    if (!bin) return res.status(404).json({ message: 'Bin not found' });
+    
     const log = await WasteLog.create({
       userId: req.user.id,
       binId,
@@ -54,7 +59,7 @@ router.post('/add', auth, async (req, res) => {
 router.get('/history', auth, async (req, res) => {
   try {
     const logs = await WasteLog.find({ userId: req.user.id }).sort({ createdAt: -1 }).limit(20);
-    res.json(logs);
+    res.status(200).json(logs);
   } catch (err) {
     res.status(500).json({ message: err.message });
   }
