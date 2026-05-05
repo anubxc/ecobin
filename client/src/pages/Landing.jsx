@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
-import { Truck, Coins, BarChart3, MessageSquare, Send } from 'lucide-react';
+import { Truck, Coins, BarChart3, MessageSquare, Send, Star } from 'lucide-react';
 import { api } from '../api';
 
 export default function Landing() {
@@ -38,6 +38,11 @@ export default function Landing() {
 
   return (
     <div className="min-h-screen bg-white font-sans">
+      {/* Sticky V2 Coming Soon Strip */}
+      <div className="sticky top-0 z-50 bg-gradient-to-r from-green-600 to-emerald-600 py-3 text-center">
+        <p className="text-white font-semibold text-sm md:text-base flex items-center justify-center gap-2"><Star size={18} /> V2 is Coming Soon with More Enhanced UI and More Features! <Star size={18} /></p>
+      </div>
+
       {/* Navigation */}
       <nav className="bg-white border-b border-gray-100">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -49,7 +54,7 @@ export default function Landing() {
                 style={{ backgroundImage: `url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%2316a34a' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e")`, backgroundPosition: 'right 0.2rem center', backgroundRepeat: 'no-repeat', backgroundSize: '1.5em 1.5em' }}
                 onChange={(e) => {
                   if (e.target.value === 'v2') {
-                    alert('v2 is coming soon!');
+                    alert('v2 is coming soon with more enhanced UI and more features!');
                     e.target.value = 'v1';
                   }
                 }}
